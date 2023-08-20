@@ -5,7 +5,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const router = require('./api');
-const { request } = require('http');
+const path = require('path');
 
 // defining the Express app
 const app = express();
@@ -16,6 +16,10 @@ app.use(helmet());
 // using bodyParser to parse JSON bodies into JS objects
 app.use(bodyParser.json());
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
 // enabling CORS for all requests
 app.use(cors());
 
@@ -24,20 +28,6 @@ app.use(morgan('combined'));
 
 // defining an endpoint
 app.use('/', router);
-
-const key = '3f7beb1f369f430891d68c6a122f496f';
-const mapId = '41020';
-
-const url = `http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx?key=${key}&mapid=${mapId}`;
-
-app.get(url, (response, res, error, body) => {
-  if (!error && response.statusCode === 200) {
-    console.log(body);
-    res.json(body);
-  } else {
-    res.json(error);
-  }
-});
 
 // starting the server
 app.listen(8080, () => {
