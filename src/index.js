@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const router = require('./api');
 const path = require('path');
+const http = require('http');
 
 // defining the Express app
 const app = express();
@@ -27,7 +28,29 @@ app.use(cors());
 app.use(morgan('combined'));
 
 // defining an endpoint
-app.use('/', router);
+// app.use('/', router);
+const key = '3f7beb1f369f430891d68c6a122f496f';
+const mapId = '41020';
+
+const routeOptions = {
+  host: 'lapi.transitchicago.com',
+  path: `/api/1.0/ttarrivals.aspx?key=${key}&mapid=${mapId}`,
+  params: {
+    key: key,
+    mapid: mapId,
+  },
+  port: 8080,
+};
+
+http.get(routeOptions, (res, error, response, body) => {
+  console.log(routeOptions);
+  if (!error && response.statusCode === 200) {
+    console.log(body);
+    res.json(body);
+  } else {
+    res.json(error);
+  }
+});
 
 // starting the server
 app.listen(8080, () => {

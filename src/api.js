@@ -7,8 +7,15 @@ const mapId = '41020';
 
 const url = `http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx?key=${key}&mapid=${mapId}`;
 
+const routeOptions = {
+  host: 'http://lapi.transitchicago.com/api/1.0',
+  path: 'ttarrivals',
+  key: key,
+  mapid: mapId,
+};
+
 router.get('/', (req, res) => {
-  request(url, (error, response, body) => {
+  request(routeOptions, (error, response, body) => {
     if (!error && response.statusCode === 200) {
       console.log(body);
       res.json(body);
